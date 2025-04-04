@@ -15,4 +15,8 @@ public interface UserRepository {
   User findById(String id);
 
   List<User> findAll();
+
+  boolean existsByEmail(String email);
+
+  boolean existsByUsername(String username);
 }

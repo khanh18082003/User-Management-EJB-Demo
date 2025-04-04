@@ -3,6 +3,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     List<User> users = (List<User>) request.getAttribute("users");
+    String errorMessage = "";
+    if (request.getAttribute("errorMessage") != null) {
+        errorMessage = request.getAttribute("errorMessage").toString();
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -183,6 +187,11 @@
         <h2>Add New User</h2>
         <form action="/EJBDemo-1.0-SNAPSHOT/users" method="post">
             <div class="form-row">
+                <% if (!errorMessage.isEmpty()) { %>
+                <div class="error-message" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px; text-align: center;">
+                    <%= errorMessage %>
+                </div>
+                <% } %>
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="text" name="first_name" placeholder="First name" required>

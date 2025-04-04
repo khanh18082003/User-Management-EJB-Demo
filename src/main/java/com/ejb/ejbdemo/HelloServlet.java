@@ -40,7 +40,7 @@ public class HelloServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+      throws IOException, ServletException {
     User user = new User();
     req.setCharacterEncoding("UTF-8");
     user.setUsername(req.getParameter("username"));
@@ -52,7 +52,13 @@ public class HelloServlet extends HttpServlet {
     user.setPhone(req.getParameter("phone"));
     user.setAddress(req.getParameter("address"));
     System.out.println(user);
-    userService.createUser(user);
+    try {
+      userService.createUser(user);
+    } catch (Exception e) {
+      req.getSession().setAttribute("error", e.getMessage());
+      resp.sendRedirect("users");
+      return;
+    }
 
     resp.sendRedirect("users");
   }
@@ -63,6 +69,12 @@ public class HelloServlet extends HttpServlet {
     List<User> users = userService.findAll();
     // Đưa danh sách users vào request attribute
     request.setAttribute("users", users);
+
+    String error = (String) request.getSession().getAttribute("error");
+    if (error != null) {
+      request.setAttribute("errorMessage", error);
+      request.getSession().removeAttribute("error");
+    }
 
     // Forward đến user.jsp
     request.getRequestDispatcher("/view/user.jsp").forward(request, response);
